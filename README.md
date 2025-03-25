@@ -144,6 +144,7 @@ npm run sanity:dev
 ### Content Schema
 
 - Courses
+
   - Title
   - Description
   - Price
@@ -153,11 +154,13 @@ npm run sanity:dev
   - Category
 
 - Modules
+
   - Title
   - Lessons
   - Order
 
 - Lessons
+
   - Title
   - Description
   - Video URL
@@ -165,6 +168,7 @@ npm run sanity:dev
   - Completion Status
 
 - Students
+
   - Profile Information
   - Enrolled Courses
   - Progress Data
@@ -178,17 +182,20 @@ npm run sanity:dev
 ### Key Components
 
 - Course Management System
+
   - Content creation and organization
   - Module and lesson structuring
   - Rich text editing
   - Media integration
 
 - Progress Tracking
+
   - Lesson completion
   - Course progress calculation
   - Module progress visualization
 
 - Payment Processing
+
   - Secure checkout
   - Course enrollment
   - Stripe integration
@@ -287,10 +294,6 @@ npm run sanity:dev
 - Toast notifications
 - Modal dialogs
 
-## Support
-
-For support, join our Discord community or email support@example.com
-
 ## License
 
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details
@@ -298,4 +301,3 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 ---
 
 Built with Next.js, Sanity, Clerk, and Stripe
-
