@@ -2,7 +2,7 @@ import React from "react";
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
 import Header from "@/components/Header";
-import { dark, neobrutalism } from "@clerk/themes";
+import { dark } from "@clerk/themes";
 import { SanityLive } from "@/sanity/lib/live";
 
 export const metadata: Metadata = {
