@@ -3,6 +3,10 @@ import Hero from "@/components/Hero";
 import { getCourses } from "@/sanity/lib/courses/getCourses";
 import { CourseCard } from "@/components/CourseCard";
 
+export const dynamic = "force-static";
+// Revalidate at the most every hour
+export const revalidate = 3600;
+
 export default async function Home() {
   const courses = await getCourses();
   return (
