@@ -120,6 +120,7 @@ export type Enrollment = {
     [internalGroqTypeReferenceTo]?: "course";
   };
   amount?: number;
+  currency?: string;
   paymentId?: string;
   enrolledAt?: string;
 };
@@ -211,6 +212,7 @@ export type Course = {
   _rev: string;
   title?: string;
   price?: number;
+  currency?: "KES" | "USD" | "EUR" | "GBP";
   slug?: Slug;
   description?: string;
   image?: {
@@ -355,6 +357,7 @@ export type GetCourseByIdQueryResult = {
   _rev: string;
   title?: string;
   price?: number;
+  currency?: "EUR" | "GBP" | "KES" | "USD";
   slug?: Slug;
   description?: string;
   image?: {
@@ -451,6 +454,7 @@ export type GetCourseBySlugQueryResult = {
   _rev: string;
   title?: string;
   price?: number;
+  currency?: "EUR" | "GBP" | "KES" | "USD";
   slug?: Slug;
   description?: string;
   image?: {
@@ -547,6 +551,7 @@ export type GetCoursesQueryResult = Array<{
   _rev: string;
   title?: string;
   price?: number;
+  currency?: "EUR" | "GBP" | "KES" | "USD";
   slug: string | null;
   description?: string;
   image?: {
@@ -612,6 +617,7 @@ export type SearchQueryResult = Array<{
   _rev: string;
   title?: string;
   price?: number;
+  currency?: "EUR" | "GBP" | "KES" | "USD";
   slug: string | null;
   description?: string;
   image?: {
@@ -743,6 +749,7 @@ export type ProgressQueryResult = {
     _rev: string;
     title?: string;
     price?: number;
+    currency?: "EUR" | "GBP" | "KES" | "USD";
     slug?: Slug;
     description?: string;
     image?: {
@@ -957,6 +964,7 @@ export type GetCompletionsQueryResult = {
     _rev: string;
     title?: string;
     price?: number;
+    currency?: "EUR" | "GBP" | "KES" | "USD";
     slug?: Slug;
     description?: string;
     image?: {
@@ -1047,6 +1055,7 @@ export type GetEnrolledCoursesQueryResult = {
       _rev: string;
       title?: string;
       price?: number;
+      currency?: "EUR" | "GBP" | "KES" | "USD";
       slug: string | null;
       description?: string;
       image?: {
@@ -1101,6 +1110,7 @@ export type GetEnrolledCoursesQueryResult = {
       } | null;
     } | null;
     amount?: number;
+    currency?: string;
     paymentId?: string;
     enrolledAt?: string;
   }>;
@@ -1147,6 +1157,7 @@ export type EnrollmentQueryResult = {
     [internalGroqTypeReferenceTo]?: "course";
   };
   amount?: number;
+  currency?: string;
   paymentId?: string;
   enrolledAt?: string;
 } | null;

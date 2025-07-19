@@ -58,6 +58,7 @@ export async function POST(req: Request) {
         courseId,
         paymentId: session.id,
         amount: session.amount_total! / 100, // Convert from cents to dollars
+        currency: session.currency?.toUpperCase() || "USD", // Stripe provides currency in lowercase
       });
 
       return new NextResponse(null, { status: 200 });

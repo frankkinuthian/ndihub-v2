@@ -5,6 +5,7 @@ interface CreateEnrollmentParams {
   courseId: string;
   paymentId: string;
   amount: number;
+  currency?: string;
 }
 
 export async function createEnrollment({
@@ -12,6 +13,7 @@ export async function createEnrollment({
   courseId,
   paymentId,
   amount,
+  currency = "KES",
 }: CreateEnrollmentParams) {
   return client.create({
     _type: "enrollment",
@@ -25,6 +27,7 @@ export async function createEnrollment({
     },
     paymentId,
     amount,
+    currency,
     enrolledAt: new Date().toISOString(),
   });
 }

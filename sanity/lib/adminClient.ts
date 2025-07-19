@@ -7,9 +7,14 @@ export const client = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
-  stega: {
-    studioUrl: `${baseUrl}/studio`,
-  },
-  token: process.env.SANITY_API_ADMIN_TOKEN,
+  useCdn: false, // Set to false for admin operations
+  token: process.env.SANITY_WEBHOOK_TOKEN || process.env.SANITY_API_ADMIN_TOKEN,
 });
+
+// Log token status for debugging (remove in production)
+const token = process.env.SANITY_WEBHOOK_TOKEN || process.env.SANITY_API_ADMIN_TOKEN;
+if (!token) {
+  console.error("No Sanity admin token found!");
+} else {
+  console.log("Sanity webhook token is configured");
+}

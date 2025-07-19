@@ -1,6 +1,7 @@
 "use server";
 
 import stripe from "@/lib/stripe";
+import { convertToUsdCents, isSupportedCurrency, type SupportedCurrency } from "@/lib/currency";
 import baseUrl from "@/lib/baseUrl";
 
 import { urlFor } from "@/sanity/lib/image";
@@ -42,7 +43,18 @@ export async function createStripeCheckout(courseId: string, userId: string) {
     if (!course.price && course.price !== 0) {
       throw new Error("Course price is not set");
     }
-    const priceInCents = Math.round(course.price * 100);
+
+    // Convert course price to USD cents for Stripe
+    const courseCurrency = course.currency || "USD";
+    let priceInCents: number;
+
+    if (isSupportedCurrency(courseCurrency)) {
+      priceInCents = convertToUsdCents(course.price, courseCurrency as SupportedCurrency);
+    } else {
+      // Fallback for unsupported currencies - assume USD
+      priceInCents = Math.round(course.price * 100);
+      console.warn(`Unsupported currency ${courseCurrency}, treating as USD`);
+    }
 
     // if course is free, create enrollment and redirect to course page (BYPASS STRIPE CHECKOUT)
     if (priceInCents === 0) {
@@ -51,6 +63,7 @@ export async function createStripeCheckout(courseId: string, userId: string) {
         courseId: course._id,
         paymentId: "free",
         amount: 0,
+        currency: course.currency || "USD",
       });
 
       return { url: `/courses/${course.slug?.current}` };

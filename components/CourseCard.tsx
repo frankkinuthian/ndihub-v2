@@ -6,6 +6,7 @@ import { urlFor } from "@/sanity/lib/image";
 import { Loader } from "./ui/loader";
 import { BookOpen } from "lucide-react";
 import { CourseProgress } from "./CourseProgress";
+import { PriceTag } from "./CurrencyDisplay";
 
 interface CourseCardProps {
   course: GetCoursesQueryResult[number];
@@ -40,13 +41,12 @@ export function CourseCard({ course, progress, href }: CourseCardProps) {
               {course.category?.name || "Uncategorized"}
             </span>
             {"price" in course && typeof course.price === "number" && (
-              <span className="text-white font-bold px-3 py-1 bg-black/50 dark:bg-white/20 rounded-full backdrop-blur-sm">
-                {course.price === 0
-                  ? "Free"
-                  : `$${course.price.toLocaleString("en-US", {
-                      minimumFractionDigits: 2,
-                    })}`}
-              </span>
+              <PriceTag
+                amount={course.price}
+                currency={course.currency || "KES"}
+                size="sm"
+                variant="card"
+              />
             )}
           </div>
         </div>

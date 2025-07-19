@@ -15,11 +15,22 @@ export async function isEnrolledInCourse(clerkId: string, courseId: string) {
       return false;
     }
 
+    console.log("Checking enrollment for:", {
+      clerkId,
+      courseId,
+      studentId: studentId.data
+    });
+
     // Then check for enrollment using the student's Sanity document ID
     const enrollmentQuery = groq`*[_type == "enrollment" && student._ref == $studentId && course._ref == $courseId][0]`;
     const enrollment = await sanityFetch({
       query: enrollmentQuery,
       params: { studentId: studentId.data, courseId },
+    });
+
+    console.log("Enrollment query result:", {
+      found: !!enrollment.data,
+      enrollmentData: enrollment.data
     });
 
     return !!enrollment.data;

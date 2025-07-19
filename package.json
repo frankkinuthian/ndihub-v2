@@ -7,7 +7,14 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "typegen": "sanity schema extract && sanity typegen generate"
+    "typegen": "sanity schema extract && sanity typegen generate",
+    "test:instasend": "npx tsx docs/tests/test-instasend-basic.ts",
+    "test:instasend:full": "npx tsx docs/tests/test-instasend.ts",
+    "test:instasend:webhook": "npx tsx docs/tests/test-intasend-webhook.ts",
+    "test:instasend:checkout": "npx tsx docs/tests/test-intasend-checkout-data.ts",
+    "test:currency": "npx tsx docs/tests/test-currency-conversion.ts",
+    "test:ui": "npx tsx docs/tests/test-ui-currency.ts",
+    "test:enrollment": "npx tsx docs/tests/test-enrollment-status.ts"
   },
   "dependencies": {
     "@clerk/nextjs": "^6.12.9",
@@ -26,10 +33,12 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "groq": "^3.80.1",
+    "intasend-node": "^1.1.2",
     "lucide-react": "^0.483.0",
     "next": "15.2.3",
     "next-sanity": "9",
     "next-themes": "^0.4.6",
+    "ngrok": "5.0.0-beta.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-player": "^2.16.0",
@@ -47,15 +56,23 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "dotenv": "^17.2.0",
     "eslint": "^9",
     "eslint-config-next": "15.2.3",
     "tailwindcss": "^4",
+    "tsx": "^4.20.3",
     "typescript": "^5"
   },
   "pnpm": {
     "ignoredBuiltDependencies": [
       "@clerk/shared",
       "sharp"
+    ],
+    "onlyBuiltDependencies": [
+      "esbuild",
+      "ngrok",
+      "scrollmirror",
+      "yarn"
     ]
   }
 }

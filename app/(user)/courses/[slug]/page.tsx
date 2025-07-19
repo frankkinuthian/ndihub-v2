@@ -6,6 +6,7 @@ import EnrollButton from "@/components/EnrollButton";
 import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
+import { PriceComparison } from "@/components/CurrencyDisplay";
 
 
 interface CoursePageProps {
@@ -70,10 +71,18 @@ export default async function CoursePage({ params }: CoursePageProps) {
               </p>
             </div>
             <div className="bg-white/10 backdrop-blur-sm rounded-lg p-6 md:min-w-[300px]">
-              <div className="text-3xl font-bold text-white mb-4">
-                {course.price === 0 ? "Free" : `$${course.price}`}
+              <div className="mb-4">
+                <PriceComparison
+                  amount={course.price || 0}
+                  currency={course.currency || "KES"}
+                  className="text-white"
+                />
               </div>
-              <EnrollButton courseId={course._id} isEnrolled={isEnrolled} />
+              <EnrollButton
+                courseId={course._id}
+                isEnrolled={isEnrolled}
+                showPaymentOptions={true}
+              />
             </div>
           </div>
         </div>

@@ -13,10 +13,26 @@ export const courseType = defineType({
     }),
     {
       name: "price",
-      title: "Price (USD)",
+      title: "Price (KSh)",
       type: "number",
-      description: "Price in USD",
+      description: "Price in Kenyan Shillings (KSh)",
       validation: (Rule) => Rule.min(0),
+    },
+    {
+      name: "currency",
+      title: "Currency",
+      type: "string",
+      description: "Currency code (e.g., KES, USD)",
+      initialValue: "KES",
+      options: {
+        list: [
+          { title: "Kenyan Shilling (KES)", value: "KES" },
+          { title: "US Dollar (USD)", value: "USD" },
+          { title: "Euro (EUR)", value: "EUR" },
+          { title: "British Pound (GBP)", value: "GBP" },
+        ],
+      },
+      validation: (Rule) => Rule.required(),
     },
     defineField({
       name: "slug",
