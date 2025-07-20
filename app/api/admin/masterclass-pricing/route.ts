@@ -162,7 +162,7 @@ export async function PUT(request: NextRequest) {
   } catch (error: unknown) {
     console.error("Error updating MasterClass pricing:", error);
 
-    const errorObj = error as any;
+    const errorObj = error as { message?: string; status?: number; code?: number };
     console.error("Error details:", {
       message: errorObj?.message,
       status: errorObj?.status,
