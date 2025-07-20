@@ -159,16 +159,18 @@ export async function PUT(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating MasterClass pricing:", error);
+
+    const errorObj = error as any;
     console.error("Error details:", {
-      message: error?.message,
-      status: error?.status,
-      code: error?.code,
+      message: errorObj?.message,
+      status: errorObj?.status,
+      code: errorObj?.code,
     });
 
     // Provide specific error messages based on the error type
-    if (error?.status === 403 || error?.code === 403) {
+    if (errorObj?.status === 403 || errorObj?.code === 403) {
       return NextResponse.json(
         {
           error: "Permission denied. Please ensure the service account has 'Make changes to events' permission on the calendar.",
@@ -176,7 +178,7 @@ export async function PUT(request: NextRequest) {
         },
         { status: 403 }
       );
-    } else if (error?.message?.includes('Calendar API has not been used')) {
+    } else if (errorObj?.message?.includes('Calendar API has not been used')) {
       return NextResponse.json(
         {
           error: "Google Calendar API not enabled",
@@ -184,7 +186,7 @@ export async function PUT(request: NextRequest) {
         },
         { status: 400 }
       );
-    } else if (error?.message?.includes('Not found')) {
+    } else if (errorObj?.message?.includes('Not found')) {
       return NextResponse.json(
         {
           error: "MasterClass event not found",
@@ -196,7 +198,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Failed to update MasterClass pricing",
-          details: error?.message || "Unknown error occurred"
+          details: errorObj?.message || "Unknown error occurred"
         },
         { status: 500 }
       );

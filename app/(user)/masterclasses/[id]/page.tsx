@@ -76,7 +76,8 @@ export default async function MasterClassPage({ params }: MasterClassPageProps) 
 }
 
 // Keep the original page content as a fallback or for SEO
-function MasterClassPageContent({ masterClass }: { masterClass: any }) {
+/*
+function MasterClassPageContent({ masterClass }: { masterClass: MasterClass }) {
   const startDate = new Date(masterClass.startTime);
   const endDate = new Date(masterClass.endTime);
 
@@ -319,3 +320,4 @@ function MasterClassPageContent({ masterClass }: { masterClass: any }) {
     </div>
   );
 }
+*/
