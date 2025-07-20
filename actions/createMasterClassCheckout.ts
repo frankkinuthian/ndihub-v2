@@ -258,7 +258,7 @@ async function createMasterClassStripeCheckout({
 
     // Initialize Stripe
     const stripeInstance = new stripe(process.env.STRIPE_SECRET_KEY!, {
-      apiVersion: "2024-06-20",
+      apiVersion: "2025-02-24.acacia",
     });
 
     // Create Stripe checkout session
