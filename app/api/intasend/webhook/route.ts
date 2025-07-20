@@ -1,11 +1,9 @@
-import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
 import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
 import { createMasterClassEnrollment } from "@/sanity/lib/masterclass/createMasterClassEnrollment";
 import { sendMasterClassEmailInvite } from "@/lib/emailService";
 import { getMasterClasses } from "@/lib/googleCalendar";
-import crypto from "crypto";
 
 // IntaSend webhook challenge for verification
 const webhookChallenge = process.env.INTASEND_WEBHOOK_CHALLENGE;
@@ -39,7 +37,6 @@ interface IntaSendWebhookPayload {
 export async function POST(req: Request) {
   try {
     const body = await req.text();
-    const headersList = await headers();
 
     // Parse the webhook payload
     const payload: IntaSendWebhookPayload = JSON.parse(body);

@@ -22,7 +22,7 @@ function EnrollButtonWithPaymentOptions({
   const { user, isLoaded: isUserLoaded } = useUser();
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
-  const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<PaymentMethod>("intasend");
+
   const [showOptions, setShowOptions] = useState(false);
 
   const handleEnroll = async (courseId: string, paymentMethod: PaymentMethod) => {
@@ -128,7 +128,7 @@ function EnrollButtonWithPaymentOptions({
         if (showPaymentOptions) {
           setShowOptions(true);
         } else {
-          handleEnroll(courseId, selectedPaymentMethod);
+          handleEnroll(courseId, "intasend");
         }
       }}
     >

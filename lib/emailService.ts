@@ -6,7 +6,7 @@ import { MasterClass } from './googleCalendar';
 const createTransporter = () => {
   // You can use different email providers
   if (process.env.EMAIL_PROVIDER === 'gmail') {
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       service: 'gmail',
       auth: {
         user: process.env.EMAIL_USER,
@@ -16,7 +16,7 @@ const createTransporter = () => {
   }
   
   if (process.env.EMAIL_PROVIDER === 'smtp') {
-    return nodemailer.createTransporter({
+    return nodemailer.createTransport({
       host: process.env.SMTP_HOST,
       port: parseInt(process.env.SMTP_PORT || '587'),
       secure: process.env.SMTP_SECURE === 'true',
@@ -28,7 +28,7 @@ const createTransporter = () => {
   }
 
   // Default to Gmail
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     service: 'gmail',
     auth: {
       user: process.env.EMAIL_USER,
@@ -96,14 +96,12 @@ export async function sendMasterClassEmailInvite(inviteData: EmailInviteData): P
     // Create email content
     const emailHtml = createEmailTemplate({
       firstName,
-      lastName,
       masterClass,
       joinLink: masterClass.meetingLink
     });
 
     const emailText = createEmailText({
       firstName,
-      lastName,
       masterClass,
       joinLink: masterClass.meetingLink
     });
@@ -193,9 +191,8 @@ function createEventDescription(masterClass: MasterClass): string {
   return description;
 }
 
-function createEmailTemplate({ firstName, lastName, masterClass, joinLink }: {
+function createEmailTemplate({ firstName, masterClass, joinLink }: {
   firstName: string;
-  lastName: string;
   masterClass: MasterClass;
   joinLink?: string;
 }): string {
@@ -272,9 +269,8 @@ function createEmailTemplate({ firstName, lastName, masterClass, joinLink }: {
   `;
 }
 
-function createEmailText({ firstName, lastName, masterClass, joinLink }: {
+function createEmailText({ firstName, masterClass, joinLink }: {
   firstName: string;
-  lastName: string;
   masterClass: MasterClass;
   joinLink?: string;
 }): string {

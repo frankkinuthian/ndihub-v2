@@ -40,12 +40,13 @@ export async function getEventTitle(eventId: string): Promise<string> {
       return `MasterClass ${eventId}`;
     }
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`❌ Failed to fetch event title for ID: ${eventId}`, error);
+    const errorObj = error as { message?: string; status?: number; code?: number };
     console.error('Error details:', {
-      message: error?.message,
-      status: error?.status,
-      code: error?.code
+      message: errorObj?.message,
+      status: errorObj?.status,
+      code: errorObj?.code
     });
     
     // Return fallback title
@@ -84,7 +85,7 @@ export async function getEventDetails(eventId: string) {
     console.log(`✅ Found event: "${eventResponse.data.summary}"`);
     return eventResponse.data;
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(`❌ Failed to fetch event details for ID: ${eventId}`, error);
     return null;
   }

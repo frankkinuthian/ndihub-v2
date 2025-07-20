@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { client } from "@/sanity/lib/client";
 
 // GET - Generate performance monitoring data
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     console.log('📊 Generating performance monitoring data...');
 
@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
     // Test system health
     let googleCalendarStatus = 'online';
     let sanityStatus = 'online';
-    let intasendStatus = 'online';
-    let stripeStatus = 'online';
+    const intasendStatus = 'online';
+    const stripeStatus = 'online';
 
     try {
       // Test Google Calendar API

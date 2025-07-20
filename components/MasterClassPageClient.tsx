@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { ArrowLeft, Calendar, Clock, Users, Video, MapPin, ExternalLink, User } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Users, Video, MapPin, User } from "lucide-react";
 import Link from "next/link";
 import { MasterClass } from "@/lib/googleCalendar";
 import { FormattedDescription } from "./FormattedDescription";
@@ -75,9 +75,6 @@ export function MasterClassPageClient({
 
   const startDate = new Date(masterClass.startTime);
   const endDate = new Date(masterClass.endTime);
-  const isLive = masterClass.status === 'live';
-  const isUpcoming = masterClass.status === 'upcoming';
-  const isCompleted = masterClass.status === 'completed';
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
@@ -246,12 +243,11 @@ export function MasterClassPageClient({
               {/* Pricing Display */}
               {masterClass.isPremium && !masterClass.isFree && masterClass.price && (
                 <div className="mb-6">
-                  <PriceTag 
-                    amount={masterClass.price} 
-                    currency={masterClass.currency || 'KES'} 
-                    size="lg" 
-                    variant="detail"
-                    className="text-white"
+                  <PriceTag
+                    amount={masterClass.price}
+                    currency={masterClass.currency || 'KES'}
+                    size="lg"
+                    variant="hero"
                   />
                 </div>
               )}

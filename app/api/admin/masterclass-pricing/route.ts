@@ -4,7 +4,7 @@ import { getMasterClasses } from "@/lib/googleCalendar";
 import { google } from "googleapis";
 
 // GET - List all MasterClasses with pricing
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -159,19 +159,21 @@ export async function PUT(request: NextRequest) {
       }
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error updating MasterClass pricing:", error);
+
+    const errorObj = error as { message?: string; status?: number; code?: number };
     console.error("Error details:", {
-      message: error?.message,
-      status: error?.status,
-      code: error?.code,
+      message: errorObj?.message,
+      status: errorObj?.status,
+      code: errorObj?.code,
       masterclassId: masterclassId,
       price: price,
       currency: currency
     });
 
     // Provide specific error messages based on the error type
-    if (error?.status === 403 || error?.code === 403) {
+    if (errorObj?.status === 403 || errorObj?.code === 403) {
       return NextResponse.json(
         {
           error: "Permission denied. Please ensure the service account has 'Make changes to events' permission on the calendar.",
