@@ -4,7 +4,7 @@ import { getMasterClasses } from "@/lib/googleCalendar";
 import { google } from "googleapis";
 
 // GET - List all MasterClasses with pricing
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const { userId } = await auth();
 
@@ -165,9 +165,6 @@ export async function PUT(request: NextRequest) {
       message: error?.message,
       status: error?.status,
       code: error?.code,
-      masterclassId: masterclassId,
-      price: price,
-      currency: currency
     });
 
     // Provide specific error messages based on the error type

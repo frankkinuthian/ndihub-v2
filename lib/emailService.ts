@@ -193,7 +193,7 @@ function createEventDescription(masterClass: MasterClass): string {
   return description;
 }
 
-function createEmailTemplate({ firstName, lastName, masterClass, joinLink }: {
+function createEmailTemplate({ firstName, lastName: _lastName, masterClass, joinLink }: {
   firstName: string;
   lastName: string;
   masterClass: MasterClass;
@@ -272,7 +272,7 @@ function createEmailTemplate({ firstName, lastName, masterClass, joinLink }: {
   `;
 }
 
-function createEmailText({ firstName, lastName, masterClass, joinLink }: {
+function createEmailText({ firstName, lastName: _lastName, masterClass, joinLink }: {
   firstName: string;
   lastName: string;
   masterClass: MasterClass;

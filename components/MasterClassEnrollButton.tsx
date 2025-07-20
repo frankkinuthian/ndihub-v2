@@ -2,7 +2,7 @@
 
 import { createMasterClassCheckoutSimple } from "@/actions/createMasterClassCheckoutSimple";
 import { useUser, SignInButton } from "@clerk/nextjs";
-import { CheckCircle, Smartphone, CreditCard, ChevronDown, RefreshCw, Video, Lock } from "lucide-react";
+import { CheckCircle, Smartphone, CreditCard, ChevronDown, Video, Lock } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useTransition, useState } from "react";
 import { MasterClass } from "@/lib/googleCalendar";
@@ -19,7 +19,7 @@ function MasterClassEnrollButton({
   showPaymentOptions?: boolean;
 }) {
   const { user, isLoaded: isUserLoaded } = useUser();
-  const router = useRouter();
+  // const router = useRouter(); // Uncomment if router is needed
   const [isPending, startTransition] = useTransition();
   const [showOptions, setShowOptions] = useState(false);
   const [defaultMethod] = useState<PaymentMethod>("intasend"); // IntaSend is default

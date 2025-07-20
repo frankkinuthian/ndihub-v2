@@ -1,6 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { ArrowLeft, Calendar, Clock, Users, Video, MapPin, ExternalLink, User } from "lucide-react";
+import { ArrowLeft, Calendar, Clock, Users, Video, MapPin, User } from "lucide-react";
 import Link from "next/link";
 import { getMasterClasses } from "@/lib/googleCalendar";
 import { Metadata } from "next";
@@ -59,7 +59,7 @@ export default async function MasterClassPage({ params }: MasterClassPageProps) 
         isEnrolled = false;
       }
     }
-  } catch (authError) {
+  } catch {
     console.log("Auth not available, continuing without enrollment check");
     userId = null;
     isEnrolled = false;
@@ -76,12 +76,9 @@ export default async function MasterClassPage({ params }: MasterClassPageProps) 
 }
 
 // Keep the original page content as a fallback or for SEO
-function MasterClassPageContent({ masterClass, isEnrolled }: { masterClass: any, isEnrolled: boolean }) {
+function MasterClassPageContent({ masterClass }: { masterClass: any }) {
   const startDate = new Date(masterClass.startTime);
   const endDate = new Date(masterClass.endTime);
-  const isLive = masterClass.status === 'live';
-  const isUpcoming = masterClass.status === 'upcoming';
-  const isCompleted = masterClass.status === 'completed';
 
   const formatDate = (date: Date) => {
     return date.toLocaleDateString('en-US', {
