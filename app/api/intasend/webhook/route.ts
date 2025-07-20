@@ -2,6 +2,9 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 import { getStudentByClerkId } from "@/sanity/lib/student/getStudentByClerkId";
 import { createEnrollment } from "@/sanity/lib/student/createEnrollment";
+import { createMasterClassEnrollment } from "@/sanity/lib/masterclass/createMasterClassEnrollment";
+import { sendMasterClassEmailInvite } from "@/lib/emailService";
+import { getMasterClasses } from "@/lib/googleCalendar";
 import crypto from "crypto";
 
 // IntaSend webhook challenge for verification
@@ -25,6 +28,12 @@ interface IntaSendWebhookPayload {
   created_at: string;
   updated_at: string;
   challenge: string;
+  extra?: {
+    masterclass_id?: string;
+    masterclass_title?: string;
+    user_id?: string;
+    type?: string;
+  };
 }
 
 export async function POST(req: Request) {
@@ -52,14 +61,16 @@ export async function POST(req: Request) {
 
     // Handle the payment completion event
     if (payload.state === "COMPLETE") {
-      // Extract course and user information from api_ref
-      // Format: course-{courseId}-{userId}-{timestamp}
+      // Extract information from api_ref
+      // Format: course-{courseId}-{userId}-{timestamp} OR masterclass-{masterclassId}-{userId}-{timestamp}
       const apiRef = payload.api_ref;
 
-      if (!apiRef || !apiRef.startsWith("course-")) {
+      if (!apiRef || (!apiRef.startsWith("course-") && !apiRef.startsWith("masterclass-"))) {
         console.error("Invalid api_ref format:", apiRef);
         return new NextResponse("Invalid api_ref format", { status: 400 });
       }
+
+      const isMasterClass = apiRef.startsWith("masterclass-");
 
       // Better parsing: find the user ID pattern and timestamp
       const userIdMatch = apiRef.match(/-(user_[^-]+)-(\d+)$/);
@@ -71,21 +82,29 @@ export async function POST(req: Request) {
       const userId = userIdMatch[1]; // user_2unmpymSS0WRkqHBOxzDvEwZ28x
       const timestamp = userIdMatch[2]; // 1752968453226
 
-      // Extract courseId by removing the prefix and suffix
-      const courseId = apiRef
-        .replace("course-", "") // Remove prefix
-        .replace(`-${userId}-${timestamp}`, ""); // Remove suffix
+      // Extract ID by removing the prefix and suffix
+      let itemId: string;
+      if (isMasterClass) {
+        itemId = apiRef
+          .replace("masterclass-", "") // Remove prefix
+          .replace(`-${userId}-${timestamp}`, ""); // Remove suffix
+      } else {
+        itemId = apiRef
+          .replace("course-", "") // Remove prefix
+          .replace(`-${userId}-${timestamp}`, ""); // Remove suffix
+      }
 
       console.log("Parsed webhook data:", {
         apiRef,
-        courseId,
+        type: isMasterClass ? "masterclass" : "course",
+        itemId,
         userId,
         timestamp
       });
 
-      if (!courseId || !userId) {
-        console.error("Missing course or user ID:", { courseId, userId });
-        return new NextResponse("Missing course or user ID", { status: 400 });
+      if (!itemId || !userId) {
+        console.error("Missing item or user ID:", { itemId, userId, type: isMasterClass ? "masterclass" : "course" });
+        return new NextResponse("Missing item or user ID", { status: 400 });
       }
 
       // Find the student by Clerk ID
@@ -104,25 +123,87 @@ export async function POST(req: Request) {
         email: student.email
       });
 
-      // Create an enrollment record in Sanity
-      const enrollmentData = {
-        studentId: student._id,
-        courseId,
-        paymentId: payload.invoice_id,
-        amount: parseFloat(payload.net_amount), // Convert string to number
-        currency: payload.currency, // IntaSend provides currency in the payload
-      };
+      if (isMasterClass) {
+        // Create MasterClass enrollment
+        let masterClassTitle = payload.extra?.masterclass_title;
 
-      console.log("Creating enrollment:", enrollmentData);
+        // Get the best available title using our helper function
+        const { getMasterClassTitle } = await import("@/lib/googleCalendarEvent");
+        masterClassTitle = await getMasterClassTitle(itemId, masterClassTitle);
 
-      const enrollmentResult = await createEnrollment(enrollmentData);
+        const masterClassEnrollmentData = {
+          studentId: student._id,
+          masterclassId: itemId,
+          masterclassTitle: masterClassTitle,
+          paymentId: payload.invoice_id,
+          amount: parseFloat(payload.net_amount),
+          currency: payload.currency,
+        };
 
-      console.log("Enrollment created successfully:", {
-        paymentId: payload.invoice_id,
-        enrollmentId: enrollmentResult._id,
-        studentId: student._id,
-        courseId: courseId
-      });
+        console.log("Creating MasterClass enrollment:", masterClassEnrollmentData);
+
+        const enrollmentResult = await createMasterClassEnrollment(masterClassEnrollmentData);
+
+        console.log("MasterClass enrollment created successfully:", {
+          paymentId: payload.invoice_id,
+          enrollmentId: enrollmentResult._id,
+          studentId: student._id,
+          masterclassId: itemId
+        });
+
+        // Send email invite with calendar attachment
+        try {
+          console.log("Sending email invite with calendar attachment for MasterClass...");
+
+          // Get the full MasterClass details
+          const masterClasses = await getMasterClasses();
+          const masterClass = masterClasses.find(mc => mc.id === itemId);
+
+          if (masterClass) {
+            const inviteSuccess = await sendMasterClassEmailInvite({
+              email: student.email || '',
+              firstName: student.firstName || 'Student',
+              lastName: student.lastName || '',
+              masterClass: masterClass
+            });
+
+            if (inviteSuccess) {
+              console.log("Email invite with calendar attachment sent successfully:", {
+                email: student.email,
+                masterClassId: itemId,
+                masterClassTitle: masterClass.title
+              });
+            } else {
+              console.warn("Failed to send email invite, but enrollment still successful");
+            }
+          } else {
+            console.warn("MasterClass not found for invite, but enrollment still successful");
+          }
+        } catch (inviteError) {
+          console.error("Error sending email invite:", inviteError);
+          // Don't fail the webhook - enrollment is still successful
+        }
+      } else {
+        // Create course enrollment
+        const enrollmentData = {
+          studentId: student._id,
+          courseId: itemId,
+          paymentId: payload.invoice_id,
+          amount: parseFloat(payload.net_amount),
+          currency: payload.currency,
+        };
+
+        console.log("Creating course enrollment:", enrollmentData);
+
+        const enrollmentResult = await createEnrollment(enrollmentData);
+
+        console.log("Course enrollment created successfully:", {
+          paymentId: payload.invoice_id,
+          enrollmentId: enrollmentResult._id,
+          studentId: student._id,
+          courseId: itemId
+        });
+      }
       return new NextResponse(JSON.stringify({ success: true }), {
         status: 200,
         headers: { "Content-Type": "application/json" }

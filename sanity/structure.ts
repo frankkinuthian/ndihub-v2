@@ -38,6 +38,137 @@ export const structure = (S: StructureBuilder) =>
 
       S.divider(),
 
+      // MasterClass Management
+      S.listItem()
+        .title("MasterClass Management")
+        .child(
+          S.list()
+            .title("MasterClass Options")
+            .items([
+              // All MasterClass Enrollments
+              S.listItem()
+                .title("All MasterClass Enrollments")
+                .child(
+                  S.documentTypeList("masterclassEnrollment")
+                    .title("MasterClass Enrollments")
+                    .defaultOrdering([
+                      { field: "enrolledAt", direction: "desc" },
+                    ])
+                    .child((enrollmentId) =>
+                      S.list()
+                        .title("Enrollment Details")
+                        .items([
+                          // Edit enrollment
+                          S.listItem()
+                            .title("Edit Enrollment")
+                            .child(
+                              S.document()
+                                .schemaType("masterclassEnrollment")
+                                .documentId(enrollmentId)
+                            ),
+                          // View student details
+                          S.listItem()
+                            .title("View Student")
+                            .child(
+                              S.documentList()
+                                .title("Student Details")
+                                .filter(
+                                  '_type == "student" && _id == $studentId'
+                                )
+                                .params({ studentId: "^.student._ref" })
+                            ),
+                        ])
+                    )
+                ),
+              // Enrollments by Status
+              S.listItem()
+                .title("Enrollments by Status")
+                .child(
+                  S.list()
+                    .title("Filter by Status")
+                    .items([
+                      S.listItem()
+                        .title("Active Enrollments")
+                        .child(
+                          S.documentList()
+                            .title("Active MasterClass Enrollments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && status == "active"')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                      S.listItem()
+                        .title("Completed Sessions")
+                        .child(
+                          S.documentList()
+                            .title("Completed MasterClass Enrollments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && status == "completed"')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                      S.listItem()
+                        .title("Cancelled Enrollments")
+                        .child(
+                          S.documentList()
+                            .title("Cancelled MasterClass Enrollments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && status == "cancelled"')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                    ])
+                ),
+              // Revenue Analytics
+              S.listItem()
+                .title("Revenue Analytics")
+                .child(
+                  S.list()
+                    .title("Revenue Reports")
+                    .items([
+                      S.listItem()
+                        .title("All Paid Enrollments")
+                        .child(
+                          S.documentList()
+                            .title("Paid MasterClass Enrollments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && amount > 0')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                      S.listItem()
+                        .title("KES Payments")
+                        .child(
+                          S.documentList()
+                            .title("KES MasterClass Payments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && currency == "KES" && amount > 0')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                      S.listItem()
+                        .title("USD Payments")
+                        .child(
+                          S.documentList()
+                            .title("USD MasterClass Payments")
+                            .schemaType("masterclassEnrollment")
+                            .filter('_type == "masterclassEnrollment" && currency == "USD" && amount > 0')
+                            .defaultOrdering([
+                              { field: "enrolledAt", direction: "desc" },
+                            ])
+                        ),
+                    ])
+                ),
+            ])
+        ),
+
+      S.divider(),
+
       // Users
       S.listItem()
         .title("User Management")
@@ -97,16 +228,30 @@ export const structure = (S: StructureBuilder) =>
                                 .schemaType("student")
                                 .documentId(studentId)
                             ),
-                          // Option to view enrollments
+                          // Option to view course enrollments
                           S.listItem()
-                            .title("View Enrollments")
+                            .title("View Course Enrollments")
                             .child(
                               S.documentList()
-                                .title("Student Enrollments")
+                                .title("Student Course Enrollments")
                                 .filter(
                                   '_type == "enrollment" && student._ref == $studentId'
                                 )
                                 .params({ studentId })
+                            ),
+                          // Option to view masterclass enrollments
+                          S.listItem()
+                            .title("View MasterClass Enrollments")
+                            .child(
+                              S.documentList()
+                                .title("Student MasterClass Enrollments")
+                                .filter(
+                                  '_type == "masterclassEnrollment" && student._ref == $studentId'
+                                )
+                                .params({ studentId })
+                                .defaultOrdering([
+                                  { field: "enrolledAt", direction: "desc" },
+                                ])
                             ),
                           // Option to view completed lessons
                           S.listItem()
@@ -137,6 +282,36 @@ export const structure = (S: StructureBuilder) =>
         .child(
           S.list()
             .title("System Management")
-            .items([S.documentTypeListItem("category").title("Categories")])
+            .items([
+              S.documentTypeListItem("category").title("Categories"),
+
+              S.divider(),
+
+              // MasterClass Analytics
+              S.listItem()
+                .title("📊 MasterClass Analytics")
+                .child(
+                  S.documentTypeList("masterclassAnalytics")
+                    .title("Analytics Reports")
+                    .defaultOrdering([{ field: "reportDate", direction: "desc" }])
+                ),
+
+              // Performance Monitoring
+              S.listItem()
+                .title("📈 Performance Monitoring")
+                .child(
+                  S.documentTypeList("performanceMonitoring")
+                    .title("Performance Reports")
+                    .defaultOrdering([{ field: "timestamp", direction: "desc" }])
+                ),
+
+              // MasterClass Settings
+              S.listItem()
+                .title("⚙️ MasterClass Settings")
+                .child(
+                  S.documentTypeList("masterclassSettings")
+                    .title("System Configuration")
+                ),
+            ])
         ),
     ]);

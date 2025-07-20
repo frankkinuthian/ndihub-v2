@@ -2,17 +2,27 @@ import React from "react";
 import Hero from "@/components/Hero";
 import { getCourses } from "@/sanity/lib/courses/getCourses";
 import { CourseCard } from "@/components/CourseCard";
+import { MasterClassesSection } from "@/components/MasterClassesSection";
+import { getUpcomingMasterClasses } from "@/lib/googleCalendar";
 
 export const dynamic = "force-static";
 // Revalidate at the most every hour
 export const revalidate = 3600;
 
 export default async function Home() {
-  const courses = await getCourses();
+  // Fetch both courses and masterclasses
+  const [courses, masterClasses] = await Promise.all([
+    getCourses(),
+    getUpcomingMasterClasses().catch(() => []) // Fallback to empty array if Google Calendar fails
+  ]);
+
   return (
     <div className="min-h-screen bg-background">
       <Hero />
-      {/* Course grid goes here... */}
+
+      {/* MasterClasses Section */}
+      <MasterClassesSection masterClasses={masterClasses} />
+
       {/* Courses Grid */}
       <div className="container mx-auto px-4">
         <div className="flex items-center gap-4 py-8">
