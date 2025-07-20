@@ -9,7 +9,7 @@ export default function MasterClassNotFound() {
           <Calendar className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
           <h1 className="text-4xl font-bold mb-4">MasterClass Not Found</h1>
           <p className="text-muted-foreground mb-8">
-            The MasterClass you&apos;re looking for doesn&apos;t exist or may have been removed.
+            The MasterClass you're looking for doesn't exist or may have been removed.
           </p>
           <Link
             href="/masterclasses"

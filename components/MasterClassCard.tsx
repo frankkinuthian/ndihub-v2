@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { Calendar, Clock, Users, Video, MapPin, Lock } from "lucide-react";
+import { Calendar, Clock, Users, Video, MapPin, ExternalLink, Lock } from "lucide-react";
 import { MasterClass } from "@/lib/googleCalendar";
 import Link from "next/link";
 import { FormattedDescription } from "./FormattedDescription";

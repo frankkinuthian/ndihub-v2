@@ -4,7 +4,7 @@ import { getMasterClasses } from "@/lib/googleCalendar";
 import { google } from "googleapis";
 
 // GET - List all MasterClasses with pricing
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     const { userId } = await auth();
 
@@ -159,18 +159,19 @@ export async function PUT(request: NextRequest) {
       }
     });
 
-  } catch (error: unknown) {
+  } catch (error: any) {
     console.error("Error updating MasterClass pricing:", error);
-
-    const errorObj = error as { message?: string; status?: number; code?: number };
     console.error("Error details:", {
-      message: errorObj?.message,
-      status: errorObj?.status,
-      code: errorObj?.code,
+      message: error?.message,
+      status: error?.status,
+      code: error?.code,
+      masterclassId: masterclassId,
+      price: price,
+      currency: currency
     });
 
     // Provide specific error messages based on the error type
-    if (errorObj?.status === 403 || errorObj?.code === 403) {
+    if (error?.status === 403 || error?.code === 403) {
       return NextResponse.json(
         {
           error: "Permission denied. Please ensure the service account has 'Make changes to events' permission on the calendar.",
@@ -178,7 +179,7 @@ export async function PUT(request: NextRequest) {
         },
         { status: 403 }
       );
-    } else if (errorObj?.message?.includes('Calendar API has not been used')) {
+    } else if (error?.message?.includes('Calendar API has not been used')) {
       return NextResponse.json(
         {
           error: "Google Calendar API not enabled",
@@ -186,7 +187,7 @@ export async function PUT(request: NextRequest) {
         },
         { status: 400 }
       );
-    } else if (errorObj?.message?.includes('Not found')) {
+    } else if (error?.message?.includes('Not found')) {
       return NextResponse.json(
         {
           error: "MasterClass event not found",
@@ -198,7 +199,7 @@ export async function PUT(request: NextRequest) {
       return NextResponse.json(
         {
           error: "Failed to update MasterClass pricing",
-          details: errorObj?.message || "Unknown error occurred"
+          details: error?.message || "Unknown error occurred"
         },
         { status: 500 }
       );

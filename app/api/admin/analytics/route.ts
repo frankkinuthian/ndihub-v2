@@ -3,7 +3,7 @@ import { client } from "@/sanity/lib/client";
 import { getMasterClasses } from "@/lib/googleCalendar";
 
 // GET - Generate analytics data for Sanity Studio
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
     console.log('🔍 Generating analytics data...');
 

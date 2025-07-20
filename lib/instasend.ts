@@ -22,7 +22,7 @@ export { createIntaSendInstance };
 
 // For compatibility with the Stripe pattern, export a default instance
 // This will work in Next.js server components and API routes where env vars are available
-let intasendInstance: unknown = null;
+let intasendInstance: any = null;
 
 const intasend = (() => {
   try {
@@ -30,7 +30,7 @@ const intasend = (() => {
       intasendInstance = createIntaSendInstance();
     }
     return intasendInstance;
-  } catch {
+  } catch (error) {
     // In development/testing, return null if env vars aren't loaded yet
     // Server actions and API routes should use createIntaSendInstance() directly
     return null;

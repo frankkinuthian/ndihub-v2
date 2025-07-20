@@ -3,6 +3,7 @@ import React from "react";
 import { redirect } from "next/navigation";
 import { CourseCard } from "@/components/CourseCard";
 import { Search } from "lucide-react";
+import type { SearchQueryResult } from "@/sanity.types";
 
 async function SearchPage({
   searchParams,
@@ -16,7 +17,7 @@ async function SearchPage({
   }
   const decodedTerm = decodeURIComponent(term);
 
-  const courses = await searchCourses(decodedTerm);
+  const courses: SearchQueryResult = await searchCourses(decodedTerm);
   console.log(courses);
 
   return (

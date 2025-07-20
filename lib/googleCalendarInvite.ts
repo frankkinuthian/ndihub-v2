@@ -80,7 +80,7 @@ export async function sendMasterClassInvite(inviteData: InviteData): Promise<boo
     const updatedAttendees = [...existingAttendees, newAttendee];
 
     // Update the event with new attendee
-    await calendar.events.update({
+    const updateResult = await calendar.events.update({
       calendarId: process.env.GOOGLE_CALENDAR_ID!,
       eventId: masterClass.id,
       sendUpdates: 'all', // Send email notifications to all attendees

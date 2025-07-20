@@ -7,14 +7,6 @@ import getCourseBySlug from "@/sanity/lib/courses/getCourseBySlug";
 import { isEnrolledInCourse } from "@/sanity/lib/student/isEnrolledInCourse";
 import { auth } from "@clerk/nextjs/server";
 import { PriceComparison } from "@/components/CurrencyDisplay";
-import type { Module } from "@/sanity.types";
-
-interface LessonWithId {
-  _id?: string;
-  _key?: string;
-  title?: string;
-  slug?: { current?: string };
-}
 
 
 interface CoursePageProps {
@@ -104,7 +96,7 @@ export default async function CoursePage({ params }: CoursePageProps) {
             <div className="bg-card rounded-lg p-6 mb-8 border border-border">
               <h2 className="text-2xl font-bold mb-4">Course Content</h2>
               <div className="space-y-4">
-                {course.modules?.map((module: Module, index: number) => (
+                {course.modules?.map((module, index) => (
                   <div
                     key={module._id}
                     className="border border-border rounded-lg"
@@ -115,9 +107,9 @@ export default async function CoursePage({ params }: CoursePageProps) {
                       </h3>
                     </div>
                     <div className="divide-y divide-border">
-                      {module.lessons?.map((lesson: LessonWithId, lessonIndex: number) => (
+                      {module.lessons?.map((lesson, lessonIndex) => (
                         <div
-                          key={lesson._id || lesson._key || lessonIndex}
+                          key={lesson._id}
                           className="p-4 hover:bg-muted/50 transition-colors"
                         >
                           <div className="flex items-center gap-4">

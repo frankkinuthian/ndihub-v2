@@ -109,7 +109,7 @@ export function MasterClassesSection({
             <div className="bg-muted/50 rounded-2xl p-8">
               <h3 className="text-2xl font-bold mb-4">Want to Host a MasterClass?</h3>
               <p className="text-muted-foreground mb-6 max-w-lg mx-auto">
-                Share your expertise with our community. We&apos;re always looking for industry experts to lead sessions.
+                Share your expertise with our community. We're always looking for industry experts to lead sessions.
               </p>
               <Link
                 href="/contact"

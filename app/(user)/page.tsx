@@ -5,23 +5,6 @@ import { CourseCard } from "@/components/CourseCard";
 import { MasterClassesSection } from "@/components/MasterClassesSection";
 import { getUpcomingMasterClasses } from "@/lib/googleCalendar";
 
-interface CourseWithSlug {
-  _id: string;
-  _type: "course";
-  _createdAt: string;
-  _updatedAt: string;
-  _rev: string;
-  title?: string;
-  slug: string | null;
-  description?: string;
-  price?: number;
-  currency?: "EUR" | "GBP" | "KES" | "USD";
-  image?: unknown;
-  category: unknown;
-  instructor: unknown;
-}
-
-
 export const dynamic = "force-static";
 // Revalidate at the most every hour
 export const revalidate = 3600;
@@ -51,10 +34,10 @@ export default async function Home() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 pb-16">
-          {courses.map((course: CourseWithSlug) => (
+          {courses.map((course) => (
             <CourseCard
               key={course._id}
-              course={course as any}
+              course={course}
               href={`/courses/${course.slug}`}
             />
           ))}

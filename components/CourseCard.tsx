@@ -1,5 +1,9 @@
 import React from "react";
-import { GetCoursesQueryResult } from "@/sanity.types";
+import {
+  GetCoursesQueryResult,
+  SearchQueryResult,
+  GetEnrolledCoursesQueryResult
+} from "@/sanity.types";
 import Link from "next/link";
 import Image from "next/image";
 import { urlFor } from "@/sanity/lib/image";
@@ -8,8 +12,14 @@ import { BookOpen } from "lucide-react";
 import { CourseProgress } from "./CourseProgress";
 import { PriceTag } from "./CurrencyDisplay";
 
+// Union type to handle all different course query results
+type CourseCardData =
+  | GetCoursesQueryResult[number]
+  | SearchQueryResult[number]
+  | NonNullable<NonNullable<GetEnrolledCoursesQueryResult>['enrolledCourses'][number]['course']>;
+
 interface CourseCardProps {
-  course: GetCoursesQueryResult[number];
+  course: CourseCardData;
   progress?: number;
   href: string;
 }
